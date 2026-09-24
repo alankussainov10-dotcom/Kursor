@@ -8,6 +8,8 @@ const STATIC_FILES = [
   '/Kursor/student/index.html',
   '/Kursor/teacher/',
   '/Kursor/teacher/index.html',
+  '/Kursor/crm/',
+  '/Kursor/crm/index.html',
   '/Kursor/manifest.json',
   '/Kursor/icons/icon-192.png',
   '/Kursor/icons/icon-512.png',
