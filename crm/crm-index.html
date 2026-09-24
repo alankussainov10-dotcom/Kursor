@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DaraBala — AK CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Nunito",sans-serif;min-height:100vh;background:#f0f4f8;color:#333}
+
+.topbar{background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,.2);position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:26px}
+.topbar-title{font-size:18px;font-weight:900;flex:1}
+.topbar-user{display:flex;align-items:center;gap:10px;margin-left:auto}
+.topbar-avatar{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden}
+.topbar-name{font-size:13px;font-weight:800;color:rgba(255,255,255,.9);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar-back{padding:7px 14px;border-radius:12px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;font-family:"Nunito",sans-serif;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .15s;white-space:nowrap}
+.topbar-back:hover{background:rgba(255,255,255,.25)}
+
+.main{max-width:1200px;margin:0 auto;padding:24px 18px 80px}
+
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:10px 18px;border-radius:14px;border:2px solid #e0e0e0;background:#fff;font-family:"Nunito",sans-serif;font-size:14px;font-weight:800;cursor:pointer;color:#888;transition:all .15s}
+.tab.active{border-color:#8bc34a;background:#f1f8e9;color:#2e7d32}
+.tab:hover:not(.active){border-color:#c5e1a5;background:#f9fbe7}
+
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:20px}
+.card-title{font-size:18px;font-weight:900;color:#2e7d32;margin-bottom:4px}
+.card-sub{font-size:13px;color:#aaa;font-weight:700;margin-bottom:20px;line-height:1.5}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.form-group{margin-bottom:16px}
+label{display:block;font-size:12px;font-weight:900;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+select,input[type=text],input[type=tel],input[type=number],textarea{width:100%;padding:12px 14px;border-radius:14px;border:2px solid #e0e0e0;font-family:"Nunito",sans-serif;font-size:15px;font-weight:700;color:#333;background:#fafafa;outline:none;transition:border-color .2s}
+select:focus,input:focus,textarea:focus{border-color:#8bc34a;background:#fff;box-shadow:0 0 0 3px rgba(139,195,74,.1)}
+textarea{line-height:1.6;resize:vertical;height:80px}
+
+.btn-gen{background:linear-gradient(135deg,#8bc34a,#33691e);color:#fff;border:none;border-radius:16px;padding:15px 28px;font-family:"Nunito",sans-serif;font-size:17px;font-weight:900;cursor:pointer;width:100%;transition:all .2s;box-shadow:0 4px 16px rgba(139,195,74,.4);border-bottom:4px solid rgba(0,0,0,.15)}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,195,74,.5)}
+.btn-gen:active{transform:translateY(2px);border-bottom-width:0}
+.btn-ghost{background:#fff;color:#555;border:2px solid #e0e0e0;border-radius:14px;padding:10px 18px;font-family:"Nunito",sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .15s}
+.btn-ghost:hover{border-color:#8bc34a;color:#2e7d32}
+.btn-danger{background:#fff0ee;color:#c62828;border:2px solid #ffcdd2;border-radius:12px;padding:8px 14px;font-family:"Nunito",sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:all .15s}
+.btn-danger:hover{background:#ffcdd2}
+.btn-small{border:none;border-radius:10px;padding:7px 12px;font-family:"Nunito",sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:all .15s}
+
+/* ===== STATS ===== */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:800px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-box{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);text-align:center}
+.stat-num{font-size:26px;font-weight:900;color:#2e7d32}
+.stat-label{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+
+/* ===== SEARCH ===== */
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.toolbar input[type=text]{flex:1;min-width:200px}
+.toolbar .btn-gen{width:auto;padding:12px 22px;white-space:nowrap}
+
+/* ===== KANBAN ===== */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+@media(max-width:900px){.board{grid-template-columns:1fr;gap:20px}}
+.col{background:#e8eef1;border-radius:18px;padding:12px;min-height:120px}
+.col-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 12px}
+.col-title{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
+.col-count{background:#fff;border-radius:10px;padding:2px 9px;font-size:12px;font-weight:900;color:#555}
+.col[data-stage="new"] .col-title{color:#1565c0}
+.col[data-stage="trial"] .col-title{color:#e65100}
+.col[data-stage="paid"] .col-title{color:#2e7d32}
+.col[data-stage="lost"] .col-title{color:#999}
+.col.dragover{background:#dcebd0;outline:2px dashed #8bc34a}
+.col-body{display:flex;flex-direction:column;gap:10px;min-height:60px}
+
+.lead-card{background:#fff;border-radius:14px;padding:13px 14px;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:grab;border-left:4px solid #8bc34a}
+.lead-card:active{cursor:grabbing}
+.col[data-stage="new"] .lead-card{border-left-color:#42a5f5}
+.col[data-stage="trial"] .lead-card{border-left-color:#ffa726}
+.col[data-stage="paid"] .lead-card{border-left-color:#66bb6a}
+.col[data-stage="lost"] .lead-card{border-left-color:#bdbdbd;opacity:.75}
+.lead-name{font-size:14px;font-weight:900;color:#2e2e2e;margin-bottom:3px}
+.lead-meta{font-size:12px;color:#888;font-weight:700;line-height:1.5}
+.lead-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;background:#f1f8e9;color:#558b2f;text-transform:uppercase;letter-spacing:.3px}
+.lead-actions{display:flex;gap:6px;margin-top:10px}
+.move-btn{flex:1;background:#f5f5f5;border:none;border-radius:8px;padding:6px 0;font-size:13px;cursor:pointer;transition:all .15s}
+.move-btn:hover{background:#e0e0e0}
+.empty-col{font-size:12px;color:#aaa;font-weight:700;text-align:center;padding:14px 6px}
+
+/* ===== STUDENTS ===== */
+.student-row{background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.student-info{flex:1;min-width:160px}
+.student-name{font-size:15px;font-weight:900;color:#2e2e2e}
+.student-meta{font-size:12px;color:#888;font-weight:700;margin-top:2px}
+.balance-pill{background:#f1f8e9;border-radius:14px;padding:8px 16px;text-align:center;min-width:90px}
+.balance-num{font-size:20px;font-weight:900;color:#2e7d32}
+.balance-num.low{color:#e65100}
+.balance-num.zero{color:#c62828}
+.balance-label{font-size:10px;font-weight:800;color:#888;text-transform:uppercase}
+.student-actions{display:flex;gap:8px}
+.empty-state{text-align:center;padding:40px 20px;color:#aaa;font-weight:700}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:26px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:18px;font-weight:900;color:#2e7d32;margin-bottom:18px}
+.modal-close-row{display:flex;gap:10px;margin-top:6px}
+.modal-close-row .btn-ghost{flex:1}
+.modal-close-row .btn-gen{flex:2}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#2e7d32;color:#fff;padding:12px 24px;border-radius:14px;font-family:"Nunito",sans-serif;font-size:14px;font-weight:800;z-index:9999;transition:transform .3s ease;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-logo">📊</span>
+  <div class="topbar-title">AK CRM</div>
+  <div class="topbar-user">
+    <div class="topbar-avatar" id="topbar-avatar">👤</div>
+    <span class="topbar-name" id="topbar-name">Менеджер</span>
+  </div>
+  <a href="../" class="topbar-back">← Выйти</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('leads')">🗂️ Воронка лидов</button>
+    <button class="tab" onclick="showTab('students')">🎓 Ученики</button>
+  </div>
+
+  <!-- ══════════════ LEADS / KANBAN ══════════════ -->
+  <div id="tab-leads">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Всего лидов</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-new">0</div><div class="stat-label">Заявка</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-trial">0</div><div class="stat-label">Пробный</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-paid">0</div><div class="stat-label">Оплата</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-conv">0%</div><div class="stat-label">Конверсия</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="lead-search" placeholder="🔍 Поиск по имени или телефону..." oninput="renderKanban()">
+      <button class="btn-gen" onclick="openLeadModal()">+ Новый лид</button>
+    </div>
+
+    <div class="board">
+      <div class="col" data-stage="new">
+        <div class="col-head"><span class="col-title">📥 Заявка</span><span class="col-count" id="count-new">0</span></div>
+        <div class="col-body" id="col-new"></div>
+      </div>
+      <div class="col" data-stage="trial">
+        <div class="col-head"><span class="col-title">🎯 Пробный урок</span><span class="col-count" id="count-trial">0</span></div>
+        <div class="col-body" id="col-trial"></div>
+      </div>
+      <div class="col" data-stage="paid">
+        <div class="col-head"><span class="col-title">💰 Оплата</span><span class="col-count" id="count-paid">0</span></div>
+        <div class="col-body" id="col-paid"></div>
+      </div>
+      <div class="col" data-stage="lost">
+        <div class="col-head"><span class="col-title">🚫 Отказ</span><span class="col-count" id="count-lost">0</span></div>
+        <div class="col-body" id="col-lost"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ STUDENTS ══════════════ -->
+  <div id="tab-students" style="display:none">
+    <div class="card">
+      <div class="card-title">🎓 Ученики</div>
+      <div class="card-sub">Ученики появляются здесь автоматически, когда лид переходит в колонку «Оплата» и вы нажимаете «Сделать учеником». Баланс — это количество оплаченных уроков.</div>
+    </div>
+    <div id="students-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════ LEAD MODAL ══════════════ -->
+<div class="modal-overlay" id="lead-modal">
+  <div class="modal">
+    <div class="modal-title" id="lead-modal-title">Новый лид</div>
+    <input type="hidden" id="lead-id">
+    <div class="form-group">
+      <label>Имя</label>
+      <input type="text" id="lead-name" placeholder="Имя родителя или ученика">
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Телефон</label>
+        <input type="tel" id="lead-phone" placeholder="+7 ___ ___ ____">
+      </div>
+      <div class="form-group">
+        <label>Источник</label>
+        <select id="lead-source">
+          <option>Instagram</option>
+          <option>WhatsApp</option>
+          <option>Рекомендация</option>
+          <option>Сайт</option>
+          <option>Другое</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Предмет</label>
+      <select id="lead-subject">
+        <option value="english">English</option>
+        <option value="python">Python</option>
+        <option value="both">English + Python</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Заметки</label>
+      <textarea id="lead-notes" placeholder="Возраст, удобное время, пожелания..."></textarea>
+    </div>
+    <div class="modal-close-row">
+      <button class="btn-ghost" onclick="closeLeadModal()">Отмена</button>
+      <button class="btn-gen" onclick="saveLead()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ LESSONS MODAL ══════════════ -->
+<div class="modal-overlay" id="lessons-modal">
+  <div class="modal">
+    <div class="modal-title">Начислить уроки</div>
+    <input type="hidden" id="lessons-student-id">
+    <div class="form-group">
+      <label>Количество уроков</label>
+      <input type="number" id="lessons-amount" value="8" min="1">
+    </div>
+    <div class="modal-close-row">
+      <button class="btn-ghost" onclick="closeLessonsModal()">Отмена</button>
+      <button class="btn-gen" onclick="confirmAddLessons()">Начислить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Auth check ──────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('darabala_user');
+  if (saved) {
+    try {
+      const u = JSON.parse(saved);
+      const nameEl = document.getElementById('topbar-name');
+      const avatarEl = document.getElementById('topbar-avatar');
+      if (nameEl && u.name) nameEl.textContent = u.name.split(' ')[0];
+      if (avatarEl && u.picture) avatarEl.innerHTML = `<img src="${u.picture}" style="width:36px;height:36px;border-radius:50%;object-fit:cover" referrerpolicy="no-referrer">`;
+    } catch(e) {}
+  }
+  renderKanban();
+  renderStudents();
+});
+
+// ── State ───────────────────────────────────
+function loadLeads(){ try{ return JSON.parse(localStorage.getItem('darabala_crm_leads')||'[]'); }catch(e){ return []; } }
+function saveLeads(l){ localStorage.setItem('darabala_crm_leads', JSON.stringify(l)); }
+function loadStudents(){ try{ return JSON.parse(localStorage.getItem('darabala_crm_students')||'[]'); }catch(e){ return []; } }
+function saveStudents(s){ localStorage.setItem('darabala_crm_students', JSON.stringify(s)); }
+
+const STAGES = ['new','trial','paid','lost'];
+const STAGE_LABEL = {new:'Заявка', trial:'Пробный урок', paid:'Оплата', lost:'Отказ'};
+const SUBJECT_LABEL = {english:'English', python:'Python', both:'English+Python'};
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-leads').style.display = name==='leads' ? 'block' : 'none';
+  document.getElementById('tab-students').style.display = name==='students' ? 'block' : 'none';
+  if (name==='students') renderStudents();
+}
+
+// ── Leads / Kanban ──────────────────────────
+function openLeadModal(lead){
+  document.getElementById('lead-modal-title').textContent = lead ? 'Редактировать лида' : 'Новый лид';
+  document.getElementById('lead-id').value = lead ? lead.id : '';
+  document.getElementById('lead-name').value = lead ? lead.name : '';
+  document.getElementById('lead-phone').value = lead ? lead.phone : '';
+  document.getElementById('lead-source').value = lead ? lead.source : 'Instagram';
+  document.getElementById('lead-subject').value = lead ? lead.subject : 'english';
+  document.getElementById('lead-notes').value = lead ? lead.notes : '';
+  document.getElementById('lead-modal').classList.add('show');
+}
+function closeLeadModal(){ document.getElementById('lead-modal').classList.remove('show'); }
+
+function saveLead(){
+  const name = document.getElementById('lead-name').value.trim();
+  if (!name){ showToast('Введите имя'); return; }
+  const id = document.getElementById('lead-id').value;
+  const leads = loadLeads();
+  const data = {
+    name,
+    phone: document.getElementById('lead-phone').value.trim(),
+    source: document.getElementById('lead-source').value,
+    subject: document.getElementById('lead-subject').value,
+    notes: document.getElementById('lead-notes').value.trim(),
+  };
+  if (id){
+    const idx = leads.findIndex(l=>l.id===id);
+    if (idx>-1) Object.assign(leads[idx], data);
+  } else {
+    leads.push({ id: uid(), stage:'new', createdAt: Date.now(), ...data });
+  }
+  saveLeads(leads);
+  closeLeadModal();
+  renderKanban();
+  showToast('Лид сохранён');
+}
+
+function deleteLead(id){
+  if (!confirm('Удалить этого лида?')) return;
+  saveLeads(loadLeads().filter(l=>l.id!==id));
+  renderKanban();
+  showToast('Лид удалён');
+}
+
+function moveLead(id, stage){
+  const leads = loadLeads();
+  const lead = leads.find(l=>l.id===id);
+  if (!lead) return;
+  lead.stage = stage;
+  saveLeads(leads);
+  renderKanban();
+}
+
+function renderKanban(){
+  const leads = loadLeads();
+  const query = (document.getElementById('lead-search')?.value || '').toLowerCase();
+  const filtered = leads.filter(l => l.name.toLowerCase().includes(query) || (l.phone||'').includes(query));
+
+  STAGES.forEach(stage=>{
+    const col = document.getElementById('col-'+stage);
+    const inStage = filtered.filter(l=>l.stage===stage);
+    document.getElementById('count-'+stage).textContent = inStage.length;
+    col.innerHTML = inStage.length ? inStage.map(l=>leadCardHTML(l)).join('') : '<div class="empty-col">Пусто</div>';
+  });
+
+  document.getElementById('stat-total').textContent = leads.length;
+  document.getElementById('stat-new').textContent = leads.filter(l=>l.stage==='new').length;
+  document.getElementById('stat-trial').textContent = leads.filter(l=>l.stage==='trial').length;
+  document.getElementById('stat-paid').textContent = leads.filter(l=>l.stage==='paid').length;
+  const closed = leads.filter(l=>l.stage==='paid'||l.stage==='lost').length;
+  const conv = closed ? Math.round(leads.filter(l=>l.stage==='paid').length / closed * 100) : 0;
+  document.getElementById('stat-conv').textContent = conv + '%';
+
+  attachDnD();
+}
+
+function leadCardHTML(l){
+  const stageIdx = STAGES.indexOf(l.stage);
+  const prev = stageIdx>0 ? STAGES[stageIdx-1] : null;
+  const next = stageIdx<STAGES.length-1 ? STAGES[stageIdx+1] : null;
+  const alreadyStudent = loadStudents().some(s=>s.leadId===l.id);
+  return `<div class="lead-card" draggable="true" data-id="${l.id}">
+    <div class="lead-name">${escapeHtml(l.name)}</div>
+    <div class="lead-meta">${escapeHtml(l.phone||'нет телефона')}</div>
+    <div class="lead-tags">
+      <span class="tag">${SUBJECT_LABEL[l.subject]||l.subject}</span>
+      <span class="tag">${escapeHtml(l.source)}</span>
+    </div>
+    ${l.notes ? `<div class="lead-meta" style="margin-top:6px">${escapeHtml(l.notes)}</div>` : ''}
+    <div class="lead-actions">
+      ${prev ? `<button class="move-btn" onclick="moveLead('${l.id}','${prev}')" title="${STAGE_LABEL[prev]}">←</button>` : ''}
+      <button class="move-btn" onclick='openLeadModal(${JSON.stringify(l).replace(/'/g,"&#39;")})' title="Изменить">✎</button>
+      ${next ? `<button class="move-btn" onclick="moveLead('${l.id}','${next}')" title="${STAGE_LABEL[next]}">→</button>` : ''}
+    </div>
+    <div class="lead-actions">
+      ${l.stage==='paid' && !alreadyStudent ? `<button class="move-btn" style="background:#e8f5e9;color:#2e7d32" onclick="convertToStudent('${l.id}')">🎓 Сделать учеником</button>` : ''}
+      <button class="move-btn" style="background:#fff0ee;color:#c62828;flex:0 0 auto;padding:6px 10px" onclick="deleteLead('${l.id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// Drag & drop (desktop)
+function attachDnD(){
+  document.querySelectorAll('.lead-card').forEach(card=>{
+    card.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+      setTimeout(()=>card.style.opacity='0.4', 0);
+    });
+    card.addEventListener('dragend', ()=>{ card.style.opacity='1'; });
+  });
+  document.querySelectorAll('.col').forEach(col=>{
+    col.addEventListener('dragover', e=>{ e.preventDefault(); col.classList.add('dragover'); });
+    col.addEventListener('dragleave', ()=>{ col.classList.remove('dragover'); });
+    col.addEventListener('drop', e=>{
+      e.preventDefault();
+      col.classList.remove('dragover');
+      const id = e.dataTransfer.getData('text/plain');
+      moveLead(id, col.dataset.stage);
+    });
+  });
+}
+
+// ── Students ────────────────────────────────
+function convertToStudent(leadId){
+  const leads = loadLeads();
+  const lead = leads.find(l=>l.id===leadId);
+  if (!lead) return;
+  const students = loadStudents();
+  if (students.some(s=>s.leadId===leadId)){ showToast('Уже ученик'); return; }
+  students.push({
+    id: uid(), leadId, name: lead.name, phone: lead.phone,
+    subject: lead.subject, lessonsTotal: 0, lessonsUsed: 0, createdAt: Date.now()
+  });
+  saveStudents(students);
+  showToast('Ученик добавлен');
+  renderKanban();
+  renderStudents();
+}
+
+function renderStudents(){
+  const students = loadStudents();
+  const list = document.getElementById('students-list');
+  if (!students.length){
+    list.innerHTML = '<div class="empty-state">Пока нет учеников. Переведите лида на этап «Оплата» и нажмите «Сделать учеником».</div>';
+    return;
+  }
+  list.innerHTML = students.map(s=>{
+    const remaining = s.lessonsTotal - s.lessonsUsed;
+    const cls = remaining<=0 ? 'zero' : (remaining<=2 ? 'low' : '');
+    return `<div class="student-row">
+      <div class="student-info">
+        <div class="student-name">${escapeHtml(s.name)}</div>
+        <div class="student-meta">${escapeHtml(s.phone||'нет телефона')} · ${SUBJECT_LABEL[s.subject]||s.subject}</div>
+      </div>
+      <div class="balance-pill">
+        <div class="balance-num ${cls}">${remaining}</div>
+        <div class="balance-label">Осталось</div>
+      </div>
+      <div class="student-actions">
+        <button class="btn-ghost" onclick="useOneLesson('${s.id}')">− Урок прошёл</button>
+        <button class="btn-ghost" onclick="openLessonsModal('${s.id}')">+ Начислить</button>
+        <button class="btn-danger" onclick="deleteStudent('${s.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function useOneLesson(id){
+  const students = loadStudents();
+  const s = students.find(x=>x.id===id);
+  if (!s) return;
+  if (s.lessonsUsed >= s.lessonsTotal){ showToast('Баланс уже 0 — сначала начислите уроки'); return; }
+  s.lessonsUsed += 1;
+  saveStudents(students);
+  renderStudents();
+}
+
+function openLessonsModal(id){
+  document.getElementById('lessons-student-id').value = id;
+  document.getElementById('lessons-amount').value = 8;
+  document.getElementById('lessons-modal').classList.add('show');
+}
+function closeLessonsModal(){ document.getElementById('lessons-modal').classList.remove('show'); }
+function confirmAddLessons(){
+  const id = document.getElementById('lessons-student-id').value;
+  const amount = parseInt(document.getElementById('lessons-amount').value, 10) || 0;
+  if (amount<=0){ showToast('Укажите количество'); return; }
+  const students = loadStudents();
+  const s = students.find(x=>x.id===id);
+  if (s) s.lessonsTotal += amount;
+  saveStudents(students);
+  closeLessonsModal();
+  renderStudents();
+  showToast(`Начислено ${amount} уроков`);
+}
+
+function deleteStudent(id){
+  if (!confirm('Удалить ученика из CRM? (в основном приложении данные не затронутся)')) return;
+  saveStudents(loadStudents().filter(s=>s.id!==id));
+  renderStudents();
+  showToast('Ученик удалён');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(ov=>{
+  ov.addEventListener('click', e=>{ if (e.target===ov) ov.classList.remove('show'); });
+});
+</script>
+</body>
+</html>
