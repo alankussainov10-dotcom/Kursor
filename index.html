@@ -133,6 +133,11 @@ body{font-family:"Nunito",sans-serif;min-height:100vh;background:linear-gradient
       <div><div class="role-name">Кабинет Учителя</div><div class="role-desc">КСП · Тесты · ИИ-помощник</div></div>
       <span class="role-badge badge-blue">Педагог</span>
     </button>
+    <button class="role-btn" onclick="goToRole('crm')">
+      <div class="role-icon">📊</div>
+      <div><div class="role-name">AK CRM</div><div class="role-desc">Лиды · Ученики · Финансы</div></div>
+      <span class="role-badge" style="background:#fff3e0;color:#e65100">Менеджер</span>
+    </button>
     <button class="btn-back" onclick="goBack()">← Сменить аккаунт</button>
   </div>
 </div>
@@ -265,7 +270,8 @@ function afterLogin(u) {
 // ── ROLE ──────────────────────────────────────────────────
 function goToRole(r) {
   sessionStorage.setItem('darabala_role', r);
-  window.location.href = r === 'student' ? 'student/' : 'teacher/';
+  const paths = { student: 'student/', teacher: 'teacher/', crm: 'crm/' };
+  window.location.href = paths[r] || 'student/';
 }
 
 function goBack() {
